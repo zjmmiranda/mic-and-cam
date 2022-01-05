@@ -1,0 +1,39 @@
+<button id="get-access">Get access to camera</button>
+<button id="takePhoto">Grab frame</button>
+<video autoplay></video>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<script>
+    document.querySelector('#get-access').addEventListener('click', async function init(e) {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: true
+        })
+        const videoTracks = stream.getVideoTracks()
+        const track = videoTracks[0]
+        alert(`Getting video from: ${track.label}`)
+        document.querySelector('video').srcObject = stream
+        document.querySelector('#get-access').setAttribute('hidden', true)
+    } catch (error) {
+        alert(`${error.name}`)
+        console.error(error)
+    }
+    })
+
+    var takePhotoButton = document.querySelector('button#takePhoto');
+    var canvas = document.querySelector('canvas');
+
+    takePhotoButton.onclick = takePhoto;
+
+    // Get a Blob from the currently selected camera source and
+    // display this with an img element.
+    function takePhoto() {
+        imageCapture.takePhoto().then(function(blob) {
+            console.log('Took photo:', blob);
+            img.classList.remove('hidden');
+            img.src = URL.createObjectURL(blob);
+        }).catch(function(error) {
+            console.log('takePhoto() error: ', error);
+        });
+    }
+</script>
